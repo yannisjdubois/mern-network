@@ -1,10 +1,14 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const userRoutes = require('./routes/user.routes');
 require('dotenv').config({path: './config/.env'}) // configuration du chemin pour aller vers les variables d'environnement
-require('./config/db')
+require('./config/db');
 const app = express();
 
 
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 
 // Routes (middlewares)
