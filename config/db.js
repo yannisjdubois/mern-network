@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 mongoose
   .connect(
-    "mongodb+srv://" + process.env.BD_USER_PASS + "@cluster0.l2bpyiq.mongodb.net/test",
+    "mongodb+srv://" + process.env.BD_USER_PASS + "@cluster0.l2bpyiq.mongodb.net/tstreamdb",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
