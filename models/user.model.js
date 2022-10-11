@@ -30,6 +30,15 @@ const userSchema = new mongoose.Schema( // Schema est un objet de la bibliothèq
         },
         followers: {
             type: [String] // ce tableau va contenir les identifiants des abonnés aux utilisateurs
-        }
+        },
+        following: {
+            type: [String]
+        },
+        likes: {
+            type: [String]
+        },
+    },
+    {
+        timestamps: true, // ajoute le champ de la date et le l'heure à la fin de tous les champs
     }
 )
