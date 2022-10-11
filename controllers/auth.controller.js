@@ -3,7 +3,7 @@ const UserModel = require('../models/user.model');
 
 
 
-module.exports.signUp = async (req, res) {
+module.exports.signUp = async (req, res) => {
     // console.log(req.body);
     const {pseudo, email, password} = req.body // déstructuration de la donnée
 

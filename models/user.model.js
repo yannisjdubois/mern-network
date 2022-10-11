@@ -24,5 +24,12 @@ const userSchema = new mongoose.Schema( // Schema est un objet de la bibliothèq
             max: 1024, // nécessaire étant donné que la clé sera cryptée
             minLength: 6,
         },
+        bio: {
+            type: String,
+            max: 1024,
+        },
+        followers: {
+            type: [String] // ce tableau va contenir les identifiants des abonnés aux utilisateurs
+        }
     }
 )
