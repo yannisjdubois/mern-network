@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema( // Schema est un objet de la bibliothèq
             max: 1024, // nécessaire étant donné que la clé sera cryptée
             minLength: 6,
         },
+        picture: {
+            type: String,
+            default: "./",
+        },
         bio: {
             type: String,
             max: 1024,
@@ -42,3 +46,6 @@ const userSchema = new mongoose.Schema( // Schema est un objet de la bibliothèq
         timestamps: true, // ajoute le champ de la date et le l'heure à la fin de tous les champs
     }
 )
+
+const UserModel = mongoose.model('user', userSchema);
+module.exports = UserModel //export de l'incrémentation de UserModel
