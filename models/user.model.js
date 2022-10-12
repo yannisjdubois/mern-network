@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { isEmail } = require('validator');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema( // Schema est un objet de la bibliothèque Mongoose
     {
@@ -46,6 +47,11 @@ const userSchema = new mongoose.Schema( // Schema est un objet de la bibliothèq
         timestamps: true, // ajoute le champ de la date et le l'heure à la fin de tous les champs
     }
 )
+
+// Play function before save into display: 'block'
+userSchema.pre("save", async function(next) {
+    const salt = await bcrypt.genSalt(); // bcrypt génère une série de caractères pour "saler"/complexifier le mot de passe 
+})
 
 const UserModel = mongoose.model('user', userSchema);
 module.exports = UserModel //export de l'incrémentation de UserModel
