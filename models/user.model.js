@@ -50,8 +50,10 @@ const userSchema = new mongoose.Schema( // Schema est un objet de la bibliothèq
 
 // Play function before save into display: 'block'
 userSchema.pre("save", async function(next) {
-    const salt = await bcrypt.genSalt(); // bcrypt génère une série de caractères pour "saler"/complexifier le mot de passe 
-})
+    const salt = await bcrypt.genSalt(); // bcrypt génère une série de caractères pour "saler"/complexifier le mot de passe
+    this.password = await bcrypt.hash(this.password, salt);
+    next(); // permet de passer à la suite
+});
 
 const UserModel = mongoose.model('user', userSchema);
 module.exports = UserModel //export de l'incrémentation de UserModel
