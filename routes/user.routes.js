@@ -7,5 +7,6 @@ router.post("/register", authController.signUp);
 
 // user display: 'block',
 router.get('/', userController.getAllUsers);
+router.get('/:id', userController.userInfo); // quand j'ai le paramètre /:id, j'active la fonction userInfo contenue dans userController 
 
 module.exports = router;
