@@ -44,6 +44,8 @@ module.exports.updateUser = async(req, res) => {
     }
 };
 
+
+// Supprimer les informations d'utilisateurs
 module.exports.deleteUser = async(req, res) => {
     if (!ObjectID.isValid(req.params.id)) // Si ObjectID qui appelle la méthode isValid ne trouve pas l'identifiant recherché, ...
     return res.status(400).send('ID unknown :' + req.params.id) // ..., retourne status 400 + envoie message
@@ -54,4 +56,43 @@ module.exports.deleteUser = async(req, res) => {
     } catch (err) {
         return res.status(500).json({ message: err });
     }
-}
+};
+
+
+module.exports.follow = async(req, res) => {
+    if (!ObjectID.isValid(req.params.id)) // Si ObjectID qui appelle la méthode isValid ne trouve pas l'identifiant recherché, ...
+    return res.status(400).send('ID unknown :' + req.params.id) // ..., retourne status 400 + envoie message
+    
+    try {
+        // add to the follower list
+        await UserModel.findByIdAndUpdate(
+            req.params.id, // l'identifiant de la personne qu'il veut suivre
+            { $addToSet: { following: req.body.idToFollow }}, // l'identifiant de la personne qui est suivie
+            {new: true, upsert: true },
+            (err, docs) => {
+                if (!err) res.status(201).json(docs);
+                else return res.status(400).json(err);
+            }
+        );
+        // add to following list
+        await UserModel.findByIdAndUpdate(
+            req.body.idToFollow, // l'identifiant de la personne qui est suivie
+            { $addToSet: { followers: req.params.id }}
+        )
+
+    } catch (err) {
+        return res.status(500).json({ message: err });
+    }
+};
+
+
+module.exports.unfollow = async(req, res) => {
+    if (!ObjectID.isValid(req.params.id)) // Si ObjectID qui appelle la méthode isValid ne trouve pas l'identifiant recherché, ...
+    return res.status(400).send('ID unknown :' + req.params.id) // ..., retourne status 400 + envoie message
+    
+    try {
+
+    } catch (err) {
+        return res.status(500).json({ message: err });
+    }
+};
