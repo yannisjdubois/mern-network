@@ -66,18 +66,18 @@ module.exports.follow = async(req, res) => {
     try {
         // add to the follower list
         await UserModel.findByIdAndUpdate(
-            req.params.id, // l'identifiant de la personne qu'il veut suivre
-            { $addToSet: { following: req.body.idToFollow }}, // l'identifiant de la personne qui est suivie
+            req.params.id, // l'identifiant de la personne qui veut suivre
+            { $addToSet: { following: req.body.idToFollow }}, // rajoute à ce qu'on vient de mettre, l'identifiant de la personne qui est suivie
             {new: true, upsert: true },
             (err, docs) => {
-                if (!err) res.status(201).json(docs);
+                if (!err) res.status(201).json(docs); 
                 else return res.status(400).json(err);
             }
         );
         // add to following list
         await UserModel.findByIdAndUpdate(
             req.body.idToFollow, // l'identifiant de la personne qui est suivie
-            { $addToSet: { followers: req.params.id }}
+            { $addToSet: { followers: req.params.id }} // rajoute à ce qu'on vient de mettre, l'identifiant de la personne qui suit
         )
 
     } catch (err) {
