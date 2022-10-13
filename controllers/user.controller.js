@@ -64,7 +64,7 @@ module.exports.follow = async(req, res) => {
     return res.status(400).send('ID unknown :' + req.params.id) // ..., retourne status 400 + envoie message
     
     try {
-        // add to the follower list
+        // Add to the follower list
         await UserModel.findByIdAndUpdate(
             req.params.id, // l'identifiant de la personne qui veut suivre
             { $addToSet: { following: req.body.idToFollow }}, // rajoute à ce qu'on vient de mettre, l'identifiant de la personne qui est suivie
@@ -74,7 +74,7 @@ module.exports.follow = async(req, res) => {
                 else return res.status(400).json(err);
             }
         );
-        // add to following list
+        // Add to the following list
         await UserModel.findByIdAndUpdate(
             req.body.idToFollow, // l'identifiant de la personne qui est suivie
             { $addToSet: { followers: req.params.id }}, // rajoute à ce qu'on vient de mettre, l'identifiant de la personne qui suit
@@ -91,10 +91,29 @@ module.exports.follow = async(req, res) => {
 
 
 module.exports.unfollow = async(req, res) => {
-    if (!ObjectID.isValid(req.params.id)) // Si ObjectID qui appelle la méthode isValid ne trouve pas l'identifiant recherché, ...
+    if (!ObjectID.isValid(req.params.id) || !ObjectID.isValid(req.body.idToUnfollow)) // Si ObjectID qui appelle la méthode isValid ne trouve pas l'identifiant recherché, ...
     return res.status(400).send('ID unknown :' + req.params.id) // ..., retourne status 400 + envoie message
     
     try {
+        // Delete to the follower list
+        await UserModel.findByIdAndUpdate(
+            req.params.id, // l'identifiant de la personne qui veut suivre
+            { $pull: { following: req.body.idToUnfollow }}, // retire à ce qu'on vient de mettre, l'identifiant de la personne qui est suivie
+            {new: true, upsert: true },
+            (err, docs) => {
+                if (!err) res.status(201).json(docs); 
+                else return res.status(400).json(err);
+            }
+        );
+        // Delete to the following list
+        await UserModel.findByIdAndUpdate(
+            req.body.idToUnfollow, // l'identifiant de la personne qui est suivie
+            { $pull: { followers: req.params.id }}, // retire à ce qu'on vient de mettre, l'identifiant de la personne qui suit
+            (err, docs) => {
+                // if (!err) res.status(201).json(docs); 
+                if (err) return res.status(400).json(err);
+            }
+        )
 
     } catch (err) {
         return res.status(500).json({ message: err });
