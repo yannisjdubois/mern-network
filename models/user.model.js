@@ -55,5 +55,18 @@ userSchema.pre("save", async function(next) {
     next(); // permet de passer à la suite
 });
 
+
+userSchema.static.login = async function(email, password) {
+    const user = await this.findOne({ email }); // trouve ce qui correspond au mail que l'on a passé en paramètre
+    if (user) {
+        const auth = await bcrypt.compare(password, user.password) // compare le cryptage du mot de passe à celui du paramètre password que l'on a passé
+        if (auth) {
+            return user;
+        }
+        throw Error('incorrect password'); // throw arrête tout et déclenche Error
+    }
+    throw Error('incorrect email') // throw arrête tout et déclenche Error
+}
+
 const UserModel = mongoose.model('user', userSchema);
 module.exports = UserModel //export de l'incrémentation de UserModel
