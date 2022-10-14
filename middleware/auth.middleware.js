@@ -12,9 +12,10 @@ module.exports.checkUser = (req, res, next) => {
                 res.cookie('jwt', '', { maxAge: 1 }); // '' + un maxAge à 1 milliseconde permet de retirer le jeton d'accès à l'utilisateur
                 next(); // le next permet que la fonction continue
             } else {
-                let user = await UserModel.findById(decodedToken);
+                console.log('decoded token' + decodedToken);
+                let user = await UserModel.findById(decodedToken.id);
                 res.locals.user = user; // locals contient toutes les données qui transitent dont celles de l'utilisateur
-                console.log(user);
+                console.log(res.locals.user);
                 next();
             }
         }) 
