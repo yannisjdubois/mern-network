@@ -39,6 +39,6 @@ module.exports.signIn = async (req, res) => {
 
 // Déconnexion
 module.exports.logout = (req, res) => {
-    res.cookie('jwt', '', { maxAge: 1 });
+    res.cookie('jwt', '', { maxAge: 1 }); // '' + un maxAge à 1 milliseconde permet de retirer le jeton d'accès à l'utilisateur
     res.redirect('/'); // permet que la requète aboutisse
 }
