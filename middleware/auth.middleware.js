@@ -17,9 +17,27 @@ module.exports.checkUser = (req, res, next) => {
                 console.log(res.locals.user);
                 next();
             }
-        }) 
+        }); 
     } else {
         res.locals.user = null; // s'il n'y a pas de jeton, on refuse que les données d'utilisateur transitent
         next();
     }
 }
+
+
+// Middleware de vérification lors de la première authentification
+module.exports.requireAuth = (req, res, next) => {  // vérifie que le jeton correspond à quelqu'un de la base de donnée lors de l'authentification de l'utilisateur
+    const token = req.cookies.jwt;
+    if (token) {
+        jwt.verify(token, process.env.TOKEN_SECRET, async (err, decodedToken) => {  // On passe dans la méthode Verify de JWT, le jeton en cookie, le jeton secret et un callback (afin de voir les éventuels erreurs et le jeton décodé)
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(decodedToken.id);
+                next();
+            }
+        });
+    } else {
+        console.log('No token');
+    }
+} 
