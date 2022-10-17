@@ -34,7 +34,7 @@ module.exports.signIn = async (req, res) => {
         res.cookie('jwt', token, { httpOnly: true, maxAge}); // met dans les cookies, le nom du cookie + le jeton + { httpOnly: true} qui sécurise le jeton pour qu'il soit consultable que depuis notre serveur
         res.status(200).json({ user: user._id}) // envoie un status 200 avec l'identifiant de l'utilisateur pour montrer que la connexion est réussie
     } catch (err){
-        const errors = signUpErrors(err) ;
+        const errors = signInErrors(err) ;
         res.status(200).json({ errors })
     }
 }

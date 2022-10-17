@@ -16,5 +16,17 @@ module.exports.signUpErrors = (err) => {
     if (err.code === 11000 && Object.keys(err.keyValue)[0].includes('email')) // permet d'identifier quand le champs email contient une valeur déjà présente en base de données
         errors.email = 'Cet email est déjà enregistré';
 
-    return errors
+    return errors;
+};
+
+module.exports.signInErrors = (err) => {
+    let errors = { email: '', password: ''}
+
+    if (err.message.includes('email'))
+    errors.email = "Email inconnu";
+
+if (err.message.includes('password'))
+    errors.password = "Le mot de passe ne correspond pas";
+
+    return errors;
 }
