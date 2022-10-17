@@ -19,7 +19,8 @@ module.exports.signUp = async (req, res) => {
         const user = await UserModel.create({pseudo, email, password}); // La constante user attend la création des champs ... du UserModel
         res.status(201).json({ user: user._id }); // En réponse à la création du UserModel, je renvoie l'identification de l'utilisateur
     } catch(err) {
-        res.status(200).send({ err })
+        const errors = signUpErrors(err) ;
+        res.status(200).send({ errors })
     }
 }
 
@@ -33,7 +34,8 @@ module.exports.signIn = async (req, res) => {
         res.cookie('jwt', token, { httpOnly: true, maxAge}); // met dans les cookies, le nom du cookie + le jeton + { httpOnly: true} qui sécurise le jeton pour qu'il soit consultable que depuis notre serveur
         res.status(200).json({ user: user._id}) // envoie un status 200 avec l'identifiant de l'utilisateur pour montrer que la connexion est réussie
     } catch (err){
-        res.status(200).json({ err })
+        const errors = signUpErrors(err) ;
+        res.status(200).json({ errors })
     }
 }
 
