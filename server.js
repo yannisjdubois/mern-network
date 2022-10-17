@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/user.routes');
+const postRoutes = require('./routes/post.routes');
 require('dotenv').config({path: './config/.env'}); // configuration du chemin pour aller vers les variables d'environnement
 require('./config/db');
 const {checkUser, requireAuth} = require('./middleware/auth.middleware');
@@ -22,7 +23,8 @@ app.get('/jwtid', requireAuth, (req, res) => {
 
 
 // Routes (middlewares)
-app.use('/api/user', userRoutes)
+app.use('/api/user', userRoutes);
+app.use('/api/post', postRoutes);
 
 
 
