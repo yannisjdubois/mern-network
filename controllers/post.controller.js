@@ -3,6 +3,7 @@ const PostModel = require("../models/post.model");
 const UserModel = require("../models/user.model");
 const ObjectID = require("mongoose").Types.ObjectId; // ObjectID vérifie que le paramètre passé existe en base de données
 
+// Lire une publication
 module.exports.readPost = (req, res) => {
   PostModel.find((err, docs) => {
     if (!err) res.send(docs);
@@ -10,6 +11,7 @@ module.exports.readPost = (req, res) => {
   });
 };
 
+// Créer une publication
 module.exports.createPost = async (req, res) => {
   const newPost = new postModel({
     posterId: req.body.posterId,
@@ -27,6 +29,7 @@ module.exports.createPost = async (req, res) => {
   }
 };
 
+// Modifier une publication
 module.exports.updatePost = (req, res) => {
   // Si ObjectID qui appelle la méthode isValid ne trouve pas l'identifiant recherché, ...
   if (!ObjectID.isValid(req.params.id))
@@ -47,6 +50,7 @@ module.exports.updatePost = (req, res) => {
   );
 };
 
+// Supprimer une publication
 module.exports.deletePost = (req, res) => {
   // Si ObjectID qui appelle la méthode isValid ne trouve pas l'identifiant recherché, ...
   if (!ObjectID.isValid(req.params.id))
@@ -56,4 +60,30 @@ module.exports.deletePost = (req, res) => {
     if (!err) res.send(docs);
     else console.log("Delete error : " + err);
   });
+};
+
+module.exports.likePost = async (req, res) => {
+  // Si ObjectID qui appelle la méthode isValid ne trouve pas l'identifiant recherché, ...
+  if (!ObjectID.isValid(req.params.id))
+    return res.status(400).send("ID unknown :" + req.params.id); // ..., retourne status 400 + envoie message
+
+    try {
+        await PostModel.findByIdAndUpdate(
+            req.params.id
+            {
+                $addToSet: { likers: req.body.id }
+            },
+            { new: true },
+            (err, docs) => {
+                if (err) return res.status(400).send(err);
+            }
+        )
+    }
+};
+
+module.exports.unlikePost = async (req, res) => {
+  // Si ObjectID qui appelle la méthode isValid ne trouve pas l'identifiant recherché, ...
+  if (!ObjectID.isValid(req.params.id))
+    return res.status(400).send("ID unknown :" + req.params.id); // ..., retourne status 400 + envoie message
+
 };
