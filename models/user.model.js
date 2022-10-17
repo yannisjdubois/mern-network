@@ -6,24 +6,25 @@ const userSchema = new mongoose.Schema( // Schema est un objet de la bibliothèq
     {
         pseudo: {
             type: String,
-            required: true,
-            minLength: 3,
-            maxLength: 55,
-            unique: true,
+            required: true, // gère le caractère obligatoire du champs
+            minlength: 3,
+            maxlength: 55,
+            unique: true, // oblige les informations du champs à être unique par rapport aux contenus déjà en base de données
             trim: true // supprime les espaces en fin de saisie
         },
         email: {
             type: String,
-            required: true,
+            required: true, // gère le caractère obligatoire du champs
             validate: [isEmail], // isEmail est une bibliothèque de Validator qui gère la validation (true/false) de l'email saisi
             lowercase: true, // contraint la police en minuscule
+            unique: true, // oblige les informations du champs à être unique par rapport aux contenus déjà en base de données
             trim: true, // supprime les espaces en fin de saisie
         },
         password: {
             type: String,
-            required: true,
+            required: true, // gère le caractère obligatoire du champs
             max: 1024, // nécessaire étant donné que la clé sera cryptée
-            minLength: 6,
+            minlength: 6,
         },
         picture: {
             type: String,
