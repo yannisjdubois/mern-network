@@ -67,23 +67,35 @@ module.exports.likePost = async (req, res) => {
   if (!ObjectID.isValid(req.params.id))
     return res.status(400).send("ID unknown :" + req.params.id); // ..., retourne status 400 + envoie message
 
-    try {
-        await PostModel.findByIdAndUpdate(
-            req.params.id
-            {
-                $addToSet: { likers: req.body.id }
-            },
-            { new: true },
-            (err, docs) => {
-                if (err) return res.status(400).send(err);
-            }
-        )
-    }
+  try {
+    await PostModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $addToSet: { likers: req.body.id }, // $addToSet rajoute l'identifiant de la personne qui a aimée au tableau de Likers sans écraser le contenu déjà présent
+      },
+      { new: true },
+      (err, docs) => {
+        if (err) return res.status(400).send(err);
+      }
+    );
+    await UserModel.findByIdAndUpdate(
+      req.body.id,
+      {
+        $addToSet: { likes: req.params.id }, // $addToSet rajoute l'identifiant du post aimé (sans écraser le contenu déjà présent)
+      },
+      { new: true },
+      (err, docs) => {
+        if (!err) res.send(docs);
+        else return res.status(400).send(err);
+      }
+    );
+  } catch (err) {
+    return res.status(400).send(err);
+  }
 };
 
 module.exports.unlikePost = async (req, res) => {
   // Si ObjectID qui appelle la méthode isValid ne trouve pas l'identifiant recherché, ...
   if (!ObjectID.isValid(req.params.id))
     return res.status(400).send("ID unknown :" + req.params.id); // ..., retourne status 400 + envoie message
-
 };
