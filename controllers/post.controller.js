@@ -187,4 +187,24 @@ module.exports.deleteCommentPost = (req, res) => {
   // Si ObjectID qui appelle la méthode isValid ne trouve pas l'identifiant recherché, ...
   if (!ObjectID.isValid(req.params.id))
     return res.status(400).send("ID unknown :" + req.params.id); // ..., retourne status 400 + envoie message
+
+  try {
+    return PostModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $pull: {
+          comments: {
+            _id: req.body.commentId,
+          },
+        },
+      },
+      { new: true },
+      (err, docs) => {
+        if (!err) return res.send(docs);
+        else return res.status(400).send(err);
+      }
+    );
+  } catch (err) {
+    return res.status(400).send(err);
+  }
 };
