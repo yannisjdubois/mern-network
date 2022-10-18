@@ -2,12 +2,17 @@ const router = require('express').Router();
 const postController = require('../controllers/post.controller');
 const { route } = require('./user.routes');
 
-route.get('/', postController.readPost);
-route.post('/', postController.createPost);
-route.put('/:id', postController.updatePost);
-route.delete('/:id', postController.deletePost);
-route.patch('/like-post/:id', postController.likePost);
-route.patch('/unlike-post/:id', postController.unlikePost);
+router.get('/', postController.readPost);
+router.post('/', postController.createPost);
+router.put('/:id', postController.updatePost);
+router.delete('/:id', postController.deletePost);
+router.patch('/like-post/:id', postController.likePost);
+router.patch('/unlike-post/:id', postController.unlikePost);
+
+// Comments
+router.patch('/comment-post/:id', postController.commentPost);
+router.patch('/edit-comment-post/:id', postController.editCommentPost);
+router.patch('/delete-comment-post/:id', postController.deleteCommentPost);
 
 
 module.exports = router;
