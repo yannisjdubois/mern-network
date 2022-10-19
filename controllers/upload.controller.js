@@ -4,6 +4,7 @@ const { promisify } = require('util');
 const { uploadErrors } = require('../utils/errors.utils');
 const pipeline = promisify(require('stream').pipeline);
 
+// Téléchargement d'une image seule
 module.exports.uploadProfil = async (req, res) => {
     try {
         if (
@@ -26,5 +27,19 @@ module.exports.uploadProfil = async (req, res) => {
         fs.createWriteStream(
             `${__dirname}/../client/public/uploads/profil/${fileName}`
         )
-    )
+    );
+
+    try {
+        await UserModel.findByIdAndUpdate(
+            req.body.userId, // l'identifiant de l'utilisateur
+            { $set : {picture: "./uploads/profil/" + fileName}}, // la variable fileName permet d'être sûr que l'on remplace la même photo
+            { new: true, upsert: true, setDefaultsOnInsert: true},
+            (err, docs) => {
+                if (!err) return res.send(docs); // docs permet d'afficher les changements d'URL de la photo
+                else return res.status(500).send({ message: err });
+            }
+        );
+    } catch(err) {
+        return res.status(500).send({ message: err });
+    }
 };
