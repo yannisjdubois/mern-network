@@ -20,7 +20,7 @@ module.exports.uploadProfil = async (req, res) => {
         return res.status(201).json({ errors });
     }
 
-    const fileName = req.body.name + ".jpg"; // chaque nouvelle photo écrasera la précédente
+    const fileName = req.body.name + ".jpg"; // chaque nouvelle photo portera le nom de l'utilisateur
 
     await pipeline(
         req.file.stream,
