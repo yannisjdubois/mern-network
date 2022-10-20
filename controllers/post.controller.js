@@ -3,9 +3,9 @@ const PostModel = require("../models/post.model");
 const UserModel = require("../models/user.model");
 const { uploadErrors } = require("../utils/errors.utils");
 const ObjectID = require("mongoose").Types.ObjectId; // ObjectID vérifie que le paramètre passé existe en base de données
-const fs = require('fs');
-const { promisify } = require('util');
-const pipeline = promisify(require('stream').pipeline);
+const fs = require("fs");
+const { promisify } = require("util");
+const pipeline = promisify(require("stream").pipeline);
 
 // Lire une publication
 module.exports.readPost = (req, res) => {
@@ -19,34 +19,36 @@ module.exports.readPost = (req, res) => {
 module.exports.createPost = async (req, res) => {
   let fileName;
 
+  // Cette fonction IF effectue tous les contrôles nécessaires si une image est envoyée dans un post
   if (req.file != null) {
     try {
       if (
-          req.file.detectedMimeType != "image/jpg" &&
-          req.file.detectedMimeType != "image/png" &&
-          req.file.detectedMimeType != "image/jpeg"
-          )
-          throw Error("invalid file"); // throw arrête le try et lance le catch
+        req.file.detectedMimeType != "image/jpg" &&
+        req.file.detectedMimeType != "image/png" &&
+        req.file.detectedMimeType != "image/jpeg"
+      )
+        throw Error("invalid file"); // throw arrête le try et lance le catch
 
-      if (req.file.size > 500000) throw Error("max size");  // throw arrête le try et lance le catch
-  } catch (err) {
-      const errors = uploadErrors(err)
+      if (req.file.size > 500000) throw Error("max size"); // throw arrête le try et lance le catch
+    } catch (err) {
+      const errors = uploadErrors(err);
       return res.status(201).json({ errors });
-  }
+    }
 
-  fileName = req.body.posterId + Date.now() + '.jpg' ; // personnalisation du nom de l'image de l'utilisateur qui poste avec la date et l'extension jpg
+    fileName = req.body.posterId + Date.now() + ".jpg"; // personnalisation du nom de l'image avec l'identifiant de l'utilisateur qui poste, le moment précis de l'envoi et l'extension jpg
   }
 
   await pipeline(
     req.file.stream,
     fs.createWriteStream(
-        `${__dirname}/../client/public/uploads/profil/${fileName}`
+      `${__dirname}/../client/public/uploads/profil/${fileName}`
     )
-);
+  );
 
   const newPost = new postModel({
     posterId: req.body.posterId,
     message: req.body.message,
+    picture: req.file != null ? "./uploads/posts/" + fileName : "", // si jamais req.file n'est pas null, alors passe le contenu de fileName
     video: req.body.video,
     likers: [],
     comments: [],
