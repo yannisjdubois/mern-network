@@ -6,9 +6,22 @@ const postRoutes = require('./routes/post.routes');
 require('dotenv').config({path: './config/.env'}); // configuration du chemin pour aller vers les variables d'environnement
 require('./config/db');
 const {checkUser, requireAuth} = require('./middleware/auth.middleware');
+const cors = require('cors');
+
 const app = express();
 
 
+// Cors() donne l'accès de mon API à tous (mais c'est déconseillé)
+// Origin donne l'accès de mon API au site désiré
+const corsOptions = {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+    'allowedHeaders': ['sessionId', 'Content-Type'],
+    'exposedHeaders': ['sessionId'],
+    'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    'preflightContinue': false
+}
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json()); // Lecture du body
 app.use(bodyParser.urlencoded({extended: true})); // Lecture des l'URL
@@ -22,7 +35,7 @@ app.get('/jwtid', requireAuth, (req, res) => {
 });
 
 
-// Routes (middlewares)
+// Routes (middlewares qui surveillent les requests et les responses)
 app.use('/api/user', userRoutes);
 app.use('/api/post', postRoutes);
 
